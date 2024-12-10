@@ -14,7 +14,7 @@ The pipelines provided in that code gathers several alignement-based methods for
 
 # Features
 1. Mask the data: `mask_id_annot_whole_vol_with_descendants.py`
-2. Register the data: `registration_niftireg_regF3D_serial.py"`
+2. Register the data: `CCFv2_to_CCFv3_registration_niftireg_pipeline.py`
 
 # Installation
 ```
