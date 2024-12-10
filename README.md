@@ -2,11 +2,11 @@
 
 # Overview
 This repository contains the code developed for producing the CCFv3aBBP Nissl-based atlas, an extension of the Allen Institute's Common Coordinate Framework version 3 (CCFv3).
-The project focuses on enhancing the anatomical correspondance between the Allen Reference Atlas (ARA) Nissl stained volume and the CCFv3 annotations and integrate the necessary data (anatomiy and annotation) to provide a comprehensive atlas of the entire mouse brain.
+The project focuses on enhancing the anatomical correspondance between the Allen Reference Atlas (ARA) Nissl stained volume and the CCFv3 annotations and integrate the necessary data (anatomy and annotation) to provide a comprehensive atlas of the entire mouse brain.
 This new atlas version extends the main olfactory bulb, cerebellum, and medulla regions. Some additional layers are also incorporated within the resulting CCFv3cBBP version, such as the barrel columns and the spinal cord.
 This project also made it possible to produce an average Nissl template based on 734 mouse brains.
-The pipelines provided in that code gathers several alignement-based methods for performing a region-based registration mainly, divided into 3 Automated Registration Methods (ARM):
-- ARM A: Alignement of the ARA Nissl volume in the CCFv3,
+The pipeline and the tools provided in that repository gathers several alignment-based methods for performing a region-based registration mainly, divided into 3 Automated Registration Methods (ARM):
+- ARM A: Alignment of the ARA Nissl volume in the CCFv3,
 - ARM B: Extension of the main olfactory bulb,
 - ARM C: Extension of the cerebellum/medulla.
 
@@ -38,8 +38,8 @@ All the following steps are part of the following pipeline. They are run on a si
 ![Capture d’écran du 2024-12-10 16-59-38](https://github.com/user-attachments/assets/3468bebc-7db8-4694-908e-125864c0e530)
 
 ### 1. Identify the common hierarchy
-This steps allows you to identify the common identifiers in both annoation files (CCFv2 and CCFv3) according to their existance in both versions.
-This is just a tool for letting you identify the regions of interest you will focus on, as well as the level of ontology you would choose.
+This steps allows you to identify the common identifiers in both annotation files (CCFv2 and CCFv3) according to their support (number of voxels) in both versions.
+This is just a tool for letting you identify the regions of interest you will focus on, as well as the level of ontology you would choose for applying the pipeline.
 In the following steps, we took the example of the regitration of the `main olfactory bulb` region, with acronym `MOB`.
 ```
 python tools/common_hierarchy.py [...]/ccfv3_hierarchy.json [...]/ccfv2_hierarchy.json [...]/input_hier_id_file_list.json [...]/output_folder
@@ -53,9 +53,9 @@ mkdir [...]/ids
 python tools/hierarchy_id.py [...]/id main_olfactory_bulb yes no yes no
 ```
 
-### 3. Run the linear and non linear monomodal registration with the annotation files (A1)
-You can either run this step yourself using the following command or extract the result from the first step of the `deep-atlas-pipeline` at https://github.com/BlueBrain/Deep-Atlas.
-This step will produce a registered annotation file called `ccfv2_annot_SyN.nrrd`, plus the transformation file. The output transformation file should be applied to the ARA Nissl volume as well, called `ara_nisslCOR_SyN.nrrd`
+### 3. Run the linear and nonlinear monomodal registration with the annotation files (A1)
+You can either run this step yourself using the following command line or extract the result from the first step of the `deep-atlas-pipeline` at https://github.com/BlueBrain/Deep-Atlas.
+This step will produce a registered annotation file called `ccfv2_annot_SyN.nrrd`, plus the attached transformation file. This output transformation file should be applied to the ARA Nissl volume as well, then called `ara_nisslCOR_SyN.nrrd`
 ```
 python pipeline/registration_antspy.py ccfv3_annot.nrrd ccfv2_annot.nrrd [...]/output_folder yes nrrd SyN mattes nearest
 ```
@@ -80,7 +80,7 @@ python pipeline/mask_id_annot.py [...]/ccfv3_annot.nrrd [...]/id/MOB.npy [...]/c
 python [...]/average_template.nrrd [...]/ccfv3_masks/ccfv3_annot_MOB.nrrd mkdir [...]/ccfv3_annat_masked/average_template_MOB.nrrd .x
 ```
 
-### 6. Run the linear and non linear multimodal registration on the masked anatomical files (A3)
+### 6. Run the linear and nonlinear multimodal registration on the masked anatomical files (A3)
 This step aims at aligning the selected anatomical masked file between the ARA Nissl volume and the average template (i.e. from the CCFv2 to the CCFv3). You need first to convert the NRRD file into the NIFTI format.
 ```
 mkdir [...]/registered_annat
@@ -88,7 +88,7 @@ python pipeline/registration_niftireg_regF3D.py [...]/ccfv3_annat_masked/average
 ```
 
 ### 7. Mask all the output files (A4)
-Once you did this registration for all the regions of interest at the level of ontolgy you chose, stored in the `[...]/registered_annat` folder, you can mask all the resulting anatomical files.
+Once you did this registration for all the regions of interest at the level of ontolgy you chose and stored in the `[...]/registered_annat` folder, you can mask all the resulting anatomical files.
 ```
 mkdir [...]/registered_annat_masked
 python pipeline/mask_subregions_folder.py [...]/registered_annat [...]/ccfv3_masks [...]/registered_annat_masked
@@ -100,7 +100,7 @@ This step combines all files from a given folder in adding them and results into
 python tools/add_images_from_folder.py [...]/registered_annat_masked [...]/reconstructed_aligned_ara_nisslCOR_SyN.nrrd
 ```
 
-### 9. Run the final non linear monomodal registration step (A5)
+### 9. Run the final nonlinear monomodal registration step (A5)
 This step aims at aligning the raw ARA Nissl with the reconstructed aligned ARA Nissl in the CCFv3. You also need to convert all NRRD files into the NIFTI format.
 ```
 python pipeline/registration_niftireg_regF3D.py [...]/reconstructed_aligned_ara_nisslCOR_SyN.nii.gz [...]/ara_nisslCOR_SyN.nii.gz [...]/ara_nisslCOR_SyN_res.nii.gz
