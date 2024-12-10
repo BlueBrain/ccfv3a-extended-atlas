@@ -1,0 +1,11 @@
+ants
+atlalign
+atlannot
+json
+matplotlib==3.6.2
+multiprocessing
+nipype
+nrrd
+numpy==1.23.5
+scipy==1.9.3
+voxcell==3.1.6
