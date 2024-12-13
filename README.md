@@ -188,7 +188,7 @@ python tools/math2.py [...]/ara_nisslCOR_SyN.nrrd [...]/lobule_masks_ccfv2/ccfv2
 python tools/apply_def_field.py [...]/lobule_masks_ccfv3/ccfv3_annot_FL.nrrd [...]/anatomical_lobules/ara_nisslCOR_SyN_FL.nrrd [...]/lobule_masks_registered/ccfv2_annot_SyN_FL_SyNAggro_df.npy [...]/anatomical_lobules_registered/ara_nisslCOR_SyN_FL_SyNAggro.nrrd
 ```
 
-### 3. Reconstruct the annatomical cerebellum and incorporate it to the reconstruction from A4
+### 3. Reconstruct the annatomical cerebellum and incorporate it to the reconstruction from A4 (C3)
 This step aims at masking and then merging all the aligned anatomical cerebellar lobules in one single volume. You can either reconstruct all the cerebellar layers in an independant file, for identifying their sublayers for instance, but you can also merge the result with all the other anatomical tissues in the CCFv3 from step A4, for then running the step A5 including all brain regions. 
 ```
 mkdir [...]/anatomical_lobules_registered_masked
@@ -197,7 +197,7 @@ cp [...]/reconstructed_aligned_ara_nisslCOR_SyN.nrrd [...]/anatomical_lobules_re
 python tools/add_images_from_folder.py [...]/anatomical_lobules_registered_masked [...]/reconstructed_aligned_ara_nisslCOR_SyN_CB.nrrd 
 ```
 
-#### 4. Extend the cerebellum and medulla and merge the results (C4-C5)
+### 4. Extend the cerebellum and medulla and merge the results (C4-C5)
 Apply the same steps from ARM B but with a bounding box including the cerebellum and the medulla independently and using the Waxholm Nissl volume in the horizontal incidence `waxh_NisslHOR.nrrd`. A first step for adapting the field of view of both data is required. You can then identify the lobule sub-layers (granular and molecular), using an Otsu thresholding for instance, on the resulting `reconstructed_aligned_ara_nisslCOR_SyN_CB.nrrd` cerebellar lobule volume.
 
 ### Note
